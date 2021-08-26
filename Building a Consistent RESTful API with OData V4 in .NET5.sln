@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31613.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirVinyl.Core", "AirVinyl.Core\AirVinyl.Core.csproj", "{D2B5B2FA-796B-4B59-82B6-8F8970B15681}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirVinyl.SharedKernel", "AirVinyl.SharedKernel\AirVinyl.SharedKernel.csproj", "{40528FD7-524D-40F7-B658-465F7E4A1308}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirVinyl.Infrastructure", "AirVinyl.Infrastructure\AirVinyl.Infrastructure.csproj", "{CFAFD729-5281-494C-8275-9E7B66A48D12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirVinyl.WebApi", "AirVinyl.WebApi\AirVinyl.WebApi.csproj", "{BEC38D21-E0B3-4BC3-9082-F0447FB597EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2B5B2FA-796B-4B59-82B6-8F8970B15681}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2B5B2FA-796B-4B59-82B6-8F8970B15681}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2B5B2FA-796B-4B59-82B6-8F8970B15681}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2B5B2FA-796B-4B59-82B6-8F8970B15681}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40528FD7-524D-40F7-B658-465F7E4A1308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40528FD7-524D-40F7-B658-465F7E4A1308}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40528FD7-524D-40F7-B658-465F7E4A1308}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40528FD7-524D-40F7-B658-465F7E4A1308}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFAFD729-5281-494C-8275-9E7B66A48D12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFAFD729-5281-494C-8275-9E7B66A48D12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFAFD729-5281-494C-8275-9E7B66A48D12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFAFD729-5281-494C-8275-9E7B66A48D12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEC38D21-E0B3-4BC3-9082-F0447FB597EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEC38D21-E0B3-4BC3-9082-F0447FB597EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEC38D21-E0B3-4BC3-9082-F0447FB597EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEC38D21-E0B3-4BC3-9082-F0447FB597EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {28FDB33E-88E8-4261-89A0-BF252DFB5ECD}
+	EndGlobalSection
+EndGlobal
