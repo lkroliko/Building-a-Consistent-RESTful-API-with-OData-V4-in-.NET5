@@ -14,6 +14,7 @@ namespace AirVinyl.WebApi
             using (var scope = host.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<AirVinylDbContext>();
+                context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
                 SeedData.Seed(context);
             }

@@ -1,15 +1,13 @@
 ﻿using AirVinyl.Entities;
 using AirVinyl.SharedKernel.Interfaces;
 using AirVinyl.WebApi.Extensions;
-using AirVinyl.WebApi.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Deltas;
-using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Results;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,14 +32,15 @@ namespace AirVinyl.WebApi.Controllers
             return Ok(_repository.AsQueryable<Person>());
         }
 
-        public async Task<IActionResult> Get(int key)
+        [EnableQuery]
+        public IActionResult Get(int key)
         {
-            var person = await _repository.GetByIdAsync<Person>(key);
+            var person = _repository.AsQueryable<Person>().Where(p => p.Id == key);
 
-            if (person == null)
+            if (person.Any() == false)
                 return NotFound();
 
-            return Ok(person);
+            return Ok(SingleResult.Create(person));
         }
 
         [HttpGet("odata/People({id})/{property}")]
@@ -75,18 +74,6 @@ namespace AirVinyl.WebApi.Controllers
         #endregion
 
         #region POST
-
-        //public async Task<IActionResult> Post([FromBody]PersonForPostModel personModel)
-        //{
-        //    if (ModelState.IsValid == false)
-        //        return BadRequest(ModelState);
-
-        //    var person = _mapper.Map<Person>(personModel);
-
-        //    await _repository.AddAsync(person);
-
-        //    return Created(person);
-        //}
 
         public async Task<IActionResult> Post([FromBody] Person person)
         {

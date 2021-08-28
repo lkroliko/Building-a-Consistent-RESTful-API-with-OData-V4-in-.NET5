@@ -12,10 +12,10 @@ namespace AirVinyl.WebApi
         {
             PressingDetail[] pressingDetails = SeedData.GetPressingDetails();
             Person[] people = SeedData.GetPeople();
+            SeedData.AddFriends(people);
             SeedData.AddVinylRecords(people, pressingDetails);
             RecordStore[] recordStores = SeedData.GetRecordStores();
             SeedData.AddRatings(recordStores, people);
-
             context.PressingDetails.AddRange(pressingDetails);
             context.People.AddRange(people);
             context.RecordStores.AddRange(recordStores);
@@ -371,6 +371,16 @@ namespace AirVinyl.WebApi
             //        RatedByPersonId = 2,
             //        Value = 4
             //    });
+        }
+
+        private static void AddFriends(Person[] people)
+        {
+            people[0].Friends.Add(people[1]);
+            people[0].Friends.Add(people[2]);
+
+            people[1].Friends.Add(people[3]);
+
+            people[5].Friends.Add(people[0]);
         }
     }
 }

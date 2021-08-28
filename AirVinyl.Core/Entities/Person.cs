@@ -15,5 +15,6 @@ namespace AirVinyl.Entities
         public int NumberOfRecordsOnWishList { get; set; }
         public decimal AmountOfCashToSpend { get; set; }
         public virtual ICollection<VinylRecord> VinylRecords { get; set; } = new List<VinylRecord>();
+        public virtual ICollection<Person> Friends { get; set; } = new List<Person>();
     }
 }

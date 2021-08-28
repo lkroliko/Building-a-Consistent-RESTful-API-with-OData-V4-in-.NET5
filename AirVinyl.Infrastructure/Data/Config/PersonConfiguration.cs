@@ -8,6 +8,8 @@ namespace AirVinyl.Infrastructure.Data.Config
     {
         public void Configure(EntityTypeBuilder<Person> builder)
         {
+            //builder.HasKey(p => p.Id);
+
             builder.HasMany(p => p.VinylRecords);
 
             builder.Property(p => p.Email).HasMaxLength(100);
@@ -15,6 +17,8 @@ namespace AirVinyl.Infrastructure.Data.Config
             builder.Property(p => p.LastName).HasMaxLength(50).IsRequired();
             builder.Property(p => p.DateOfBirth).IsRequired();
             builder.Property(p => p.Gender).IsRequired();
+
+            //builder.HasMany(p => p.Friends).WithOne();
         }
     }
 }

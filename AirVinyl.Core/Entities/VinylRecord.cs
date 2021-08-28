@@ -2,6 +2,7 @@
 
 namespace AirVinyl.Entities
 {
+    
     public class VinylRecord : BaseEntity
     {
         public string Title { get; set; }

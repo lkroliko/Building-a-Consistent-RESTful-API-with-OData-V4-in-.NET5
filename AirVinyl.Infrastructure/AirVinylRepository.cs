@@ -20,7 +20,7 @@ namespace AirVinyl.Infrastructure
             return _context.Set<T>().FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public IQueryable AsQueryable<T>() where T : BaseEntity
+        public IQueryable<T> AsQueryable<T>() where T : BaseEntity
         {
             return _context.Set<T>();
         }
@@ -47,6 +47,11 @@ namespace AirVinyl.Infrastructure
         {
             _context.Remove(entity);
             return _context.SaveChangesAsync();
+        }
+
+        public Task<bool> AnyAsync<T>(int id) where T : BaseEntity
+        {
+            return _context.Set<T>().AnyAsync(t => t.Id == id);
         }
     }
 }
