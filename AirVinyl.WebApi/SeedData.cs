@@ -1,4 +1,5 @@
-﻿using AirVinyl.Core.ValueObjects;
+﻿using AirVinyl.Core.Entities;
+using AirVinyl.Core.ValueObjects;
 using AirVinyl.Entities;
 using AirVinyl.Infrastructure;
 using System;
@@ -19,7 +20,6 @@ namespace AirVinyl.WebApi
             context.PressingDetails.AddRange(pressingDetails);
             context.People.AddRange(people);
             context.RecordStores.AddRange(recordStores);
-
             context.SaveChanges();
         }
 
@@ -58,6 +58,16 @@ namespace AirVinyl.WebApi
         {
             return new Person[]
             {
+                new Person()
+                {
+                    DateOfBirth = new DateTimeOffset(new DateTime(1981, 5, 5)),
+                    Email = null,
+                    FirstName = "Lukasz",
+                    LastName = "K",
+                    Gender = Gender.Male,
+                    NumberOfRecordsOnWishList = 10,
+                    AmountOfCashToSpend = 300
+                },
                 new Person()
                 {
                     DateOfBirth = new DateTimeOffset(new DateTime(1981, 5, 5)),
@@ -131,8 +141,9 @@ namespace AirVinyl.WebApi
                      CatalogNumber = "ABC/111",
                      PressingDetail = pressingDetails[0],
                      Person = people[0],
-                     Year = 1991
-                 });
+                     Year = 1991,
+                     DynamicProperties = new List<DynamicProperty>() { new DynamicProperty() { Key = "New property", Value = 13 } }
+                 }) ;
 
             people[0].VinylRecords.Add(
             new VinylRecord()
@@ -309,7 +320,34 @@ namespace AirVinyl.WebApi
                         Street = "25, Fluffy Road",
                         Country = "Belgium"
                     }
-                }
+                },
+                new SpecializedRecordStore()
+                {
+
+                    Name = "Indie Records, Inc",
+                    //Tags = new List<string>() { "Rock", "Indie", "Alternative" },
+                    Specialization = "Indie",
+                    StoreAddress = new Address()
+                      {
+                          City = "Antwerp",
+                          PostalCode = "2000",
+                          Street = "1, Main Street",
+                          Country = "Belgium"
+                      },
+                },
+                 new SpecializedRecordStore()
+                 {
+                     Name = "Rock Records, Inc",
+                     //Tags = new List<string>() { "Rock", "Pop" },
+                     Specialization = "Rock",
+                     StoreAddress = new Address()
+                     {
+                          City = "Antwerp",
+                          PostalCode = "2000",
+                          Street = "5, Big Street",
+                          Country = "Belgium"
+                     }
+                 }
             };
         }
 

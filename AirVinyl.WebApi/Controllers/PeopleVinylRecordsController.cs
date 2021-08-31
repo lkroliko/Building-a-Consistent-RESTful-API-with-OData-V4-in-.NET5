@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace AirVinyl.WebApi.Controllers
 {
+    [Route("odata")]
     public partial class PeopleVinylRecordsController : ODataController
     {
         private readonly IRepository _repository;
@@ -24,7 +25,7 @@ namespace AirVinyl.WebApi.Controllers
         #region GET
 
         [EnableQuery]
-        [HttpGet("odata/People({key})/VinylRecords")]
+        [HttpGet("People({key})/VinylRecords")]
         public async Task<IActionResult> GetPersonVinylRecords(int key)
         {
             if (await _repository.AnyAsync<Person>(key) == false)
@@ -35,7 +36,7 @@ namespace AirVinyl.WebApi.Controllers
         }
 
         [EnableQuery]
-        [HttpGet("odata/People({personKey})/VinylRecords({vinylRecordKey})")]
+        [HttpGet("People({personKey})/VinylRecords({vinylRecordKey})")]
         public IActionResult GetPersonVinylRecord(int personKey, int vinylRecordKey)
         {
             var person = _repository.AsQueryable<Person>().Where(p => p.Id == personKey);
@@ -53,7 +54,7 @@ namespace AirVinyl.WebApi.Controllers
 
         #region POST
 
-        [HttpPost("odata/People({key})/VinylRecords")]
+        [HttpPost("People({key})/VinylRecords")]
         public async Task<IActionResult> PostVinylRecord(int key, [FromBody] VinylRecord vinylRecord)
         {
             if (ModelState.IsValid == false)
@@ -73,7 +74,7 @@ namespace AirVinyl.WebApi.Controllers
 
         #region PATCH
 
-        [HttpPatch("odata/People({personKey})/VinylRecords({vinylRecordKey})")]
+        [HttpPatch("People({personKey})/VinylRecords({vinylRecordKey})")]
         public async Task<IActionResult> PatchVinylRecord(int personKey, int vinylRecordKey, [FromBody] Delta<VinylRecord> patch)
         {
             if (ModelState.IsValid == false)
@@ -99,7 +100,7 @@ namespace AirVinyl.WebApi.Controllers
 
         #region DELETE
 
-        [HttpDelete("odata/People({personKey})/VinylRecords({vinylRecordKey})")]
+        [HttpDelete("People({personKey})/VinylRecords({vinylRecordKey})")]
         public async Task<IActionResult> DeleteVinylRecord(int personKey, int vinylRecordKey)
         {
             if (await _repository.AnyAsync<Person>(personKey) == false)

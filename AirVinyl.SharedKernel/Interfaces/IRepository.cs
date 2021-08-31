@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AirVinyl.SharedKernel.Interfaces
@@ -12,5 +13,6 @@ namespace AirVinyl.SharedKernel.Interfaces
         Task UpdateAsync<T>(T entity) where T : BaseEntity;
         Task DeleteAsync<T>(T entity) where T : BaseEntity;
         Task<bool> AnyAsync<T>(int id) where T : BaseEntity;
+        Task DeleteRangeAsync<T>(IEnumerable<T> entitys) where T : BaseEntity;
     }
 }

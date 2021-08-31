@@ -13,6 +13,9 @@ namespace AirVinyl.Infrastructure.Data.Config
             builder.Property(v => v.Title).HasMaxLength(150).IsRequired();
             builder.Property(v => v.Artist).HasMaxLength(150).IsRequired();
             builder.Property(v => v.CatalogNumber).HasMaxLength(50);
+            builder.Ignore(v => v.Properties);
+
+            builder.HasMany(v => v.DynamicProperties);
         }
     }
 }

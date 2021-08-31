@@ -1,23 +1,19 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AirVinyl.Infrastructure;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using AirVinyl.Entities;
 using System.Reflection;
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.OData.Batch;
+using OData.Swagger.Services;
+using System.Linq;
 
 namespace AirVinyl.WebApi
 {
@@ -38,17 +34,28 @@ namespace AirVinyl.WebApi
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+            var batchHandler = new DefaultODataBatchHandler();
+            batchHandler.MessageQuotas.MaxNestingDepth = 3;
+            batchHandler.MessageQuotas.MaxOperationsPerChangeset = 10;
+
             services.AddControllers()
                 .AddOData(setup =>
                     {
-                        setup.Select().Filter().Expand().Count().SetMaxTop(100).AddRouteComponents("odata", GetEdmModel());
-                    })
-                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+                        setup.Select()
+                        .Filter()
+                        .Expand()
+                        .Count()
+                        .SetMaxTop(100)
+                        .AddRouteComponents("odata", GetEdmModel(), batchHandler);
+                    });
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AirVinyl.WebApi", Version = "v1" });
+                c.ResolveConflictingActions(resolver => resolver.First());
             });
+
+            services.AddOdataSwaggerSupport();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,7 +66,10 @@ namespace AirVinyl.WebApi
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AirVinyl.WebApi v1"));
+               
             }
+
+            app.UseODataBatching();
 
             app.UseHttpsRedirection();
 
@@ -87,7 +97,7 @@ namespace AirVinyl.WebApi
             builder.EntitySet<RecordStore>("RecordStores");
             builder.EntityType<RecordStore>().ContainsMany(r => r.Ratings);
 
-            var isHightRatedFunction = builder.EntityType<RecordStore>().Function("IsHightRated");
+            var isHightRatedFunction = builder.EntityType<RecordStore>().Function("IsHighRated");
             isHightRatedFunction.Returns<bool>();
             isHightRatedFunction.Parameter<int>("minimumRating");
             isHightRatedFunction.Namespace = "AirVinyl.Functions";
@@ -107,6 +117,17 @@ namespace AirVinyl.WebApi
             rateAction.Parameter<int>("rating");
             rateAction.Parameter<int>("personId");
             rateAction.Namespace = "AirVinyl.Actions";
+
+            var removeRatingsAction = builder.EntityType<RecordStore>().Action("RemoveRatings");
+            rateAction.Returns<bool>();
+            rateAction.Parameter<int>("personId");
+            removeRatingsAction.Namespace = "AirVinyl.Actions";
+
+            var removeRecordStoreRatingsAction = builder.Action("RemoveRecordStoreRatings");
+            removeRecordStoreRatingsAction.Parameter<int>("personId");
+            removeRatingsAction.Namespace = "AirVinyl.Actions";
+
+            builder.Singleton<Person>("Lukasz");
 
             return builder.GetEdmModel();
         }

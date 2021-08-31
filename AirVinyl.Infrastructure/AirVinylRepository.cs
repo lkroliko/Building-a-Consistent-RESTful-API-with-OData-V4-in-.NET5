@@ -1,6 +1,7 @@
 ﻿using AirVinyl.SharedKernel;
 using AirVinyl.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,6 +47,12 @@ namespace AirVinyl.Infrastructure
         public Task DeleteAsync<T>(T entity) where T: BaseEntity
         {
             _context.Remove(entity);
+            return _context.SaveChangesAsync();
+        }
+
+        public Task DeleteRangeAsync<T>(IEnumerable<T> entitys) where T : BaseEntity
+        {
+            _context.RemoveRange(entitys);
             return _context.SaveChangesAsync();
         }
 

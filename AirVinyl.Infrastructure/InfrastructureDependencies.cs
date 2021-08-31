@@ -19,7 +19,7 @@ namespace AirVinyl.Infrastructure
                     options.UseLoggerFactory(LoggerFactory.Create(builder => { builder.AddConsole().AddDebug(); }))
                     .EnableSensitiveDataLogging();
                 
-                //options.UseLazyLoadingProxies();
+                options.UseLazyLoadingProxies();
             });
 
             services.AddScoped<IRepository, AirVinylRepository>();

@@ -5,8 +5,12 @@ using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using System.Threading.Tasks;
 using AirVinyl.WebApi.Extensions;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
 namespace AirVinyl.WebApi.Controllers
 {
+    [Route("odata")]
     public class RecordStoresAcionsController : ODataController
     {
         private readonly IRepository _repository;
@@ -16,7 +20,7 @@ namespace AirVinyl.WebApi.Controllers
             _repository = repository;
         }
 
-        [HttpPost("odata/RecordStore({key})/AirVinyl.Actions.Rate")]
+        [HttpPost("RecordStores({key})/AirVinyl.Actions.Rate")]
         public async Task<IActionResult> Rate(int key, ODataActionParameters parameters)
         {
             var recordStore = await _repository.GetByIdAsync<RecordStore>(key);
@@ -24,10 +28,10 @@ namespace AirVinyl.WebApi.Controllers
                 return NotFound();
 
             if (parameters.TryGetValue<int>("rating", out int rating) == false)
-                return NotFound();
+                return BadRequest();
 
             if (parameters.TryGetValue<int>("personId", out int personId) == false)
-                return NotFound();
+                return BadRequest();
 
             var person = await _repository.GetByIdAsync<Person>(personId);
             if (person == null)
@@ -36,6 +40,20 @@ namespace AirVinyl.WebApi.Controllers
             recordStore.Ratings.Add(new Rating() { RatedBy = person, Value = rating });
 
             await _repository.UpdateAsync(recordStore);
+            return Ok(true);
+        }
+
+        [HttpPost("RecordStores/AirVinyl.Actions.RemoveRatings")]
+        public async Task<IActionResult> RemoveRatings(ODataActionParameters parameters)
+        {
+            if (parameters.TryGetValue<int>("personId", out int personId) == false)
+                return BadRequest();
+
+            var ratings = await _repository.AsQueryable<Rating>().Where(r => r.RatedBy.Id == personId).ToListAsync();
+            if (ratings.Count == 0)
+                return Ok(false);
+            await _repository.DeleteRangeAsync(ratings);
+
             return Ok(true);
         }
     }

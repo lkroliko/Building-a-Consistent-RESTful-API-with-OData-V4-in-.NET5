@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace AirVinyl.WebApi.Controllers
 {
+    [Route("odata/[controller]")]
     public class PeopleController : ODataController
     {
         private readonly IRepository _repository;
@@ -27,15 +28,17 @@ namespace AirVinyl.WebApi.Controllers
         #region GET
 
         [EnableQuery]
-        public IActionResult Get()
+        [HttpGet(Name = nameof(GetPeople))]
+        public IActionResult GetPeople()
         {
             return Ok(_repository.AsQueryable<Person>());
         }
 
         [EnableQuery]
-        public IActionResult Get(int key)
+        [HttpGet("({id})", Name = nameof(GetPerson))]
+        public IActionResult GetPerson(int id)
         {
-            var person = _repository.AsQueryable<Person>().Where(p => p.Id == key);
+            var person = _repository.AsQueryable<Person>().Where(p => p.Id == id);
 
             if (person.Any() == false)
                 return NotFound();
@@ -43,7 +46,7 @@ namespace AirVinyl.WebApi.Controllers
             return Ok(SingleResult.Create(person));
         }
 
-        [HttpGet("odata/People({id})/{property}")]
+        [HttpGet("({id})/{property}", Name = nameof(GetPersonProperty))]
         public async Task<IActionResult> GetPersonProperty(int id, string property)
         {
             var propertyInfo = typeof(Person).GetProperty(property);
@@ -57,7 +60,7 @@ namespace AirVinyl.WebApi.Controllers
             return Ok(value);
         }
 
-        [HttpGet("odata/People({id})/{property}/$value")]
+        [HttpGet("({id})/{property}/$value", Name = nameof(GetPersonPropertyRawValue))]
         public async Task<IActionResult> GetPersonPropertyRawValue(int id, string property)
         {
             var propertyInfo = typeof(Person).GetProperty(property);
@@ -75,6 +78,7 @@ namespace AirVinyl.WebApi.Controllers
 
         #region POST
 
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] Person person)
         {
             if (ModelState.IsValid == false)
@@ -85,7 +89,7 @@ namespace AirVinyl.WebApi.Controllers
             return Created(person);
         }
 
-        [HttpPost("odata/People({key})/VinylRecords/$ref")]
+        [HttpPost("({key})/VinylRecords/$ref")]
         public async Task<IActionResult> CreateLinkToVinylRecord(int key, [FromBody] Uri link)
         {
             var person = await _repository.GetByIdAsync<Person>(key);
@@ -111,6 +115,7 @@ namespace AirVinyl.WebApi.Controllers
 
         #region PUT
 
+        [HttpPut]
         public async Task<IActionResult> Put(int key, [FromBody] Person person)
         {
             if (ModelState.IsValid == false)
@@ -126,7 +131,7 @@ namespace AirVinyl.WebApi.Controllers
             return NoContent();
         }
 
-        [HttpPut("odata/People({key})/VinylRecords({relatedKey})/$ref")]
+        [HttpPut("({key})/VinylRecords({relatedKey})/$ref")]
         public async Task<IActionResult> UpdateLinkToVinylRecord(int key, int relatedKey, [FromBody] Uri link)
         {
             var person = await _repository.GetByIdAsync<Person>(key);
@@ -152,13 +157,14 @@ namespace AirVinyl.WebApi.Controllers
         #endregion
 
         #region PATCH
-
+        
+        [HttpPatch]
         public async Task<IActionResult> Patch(int key, Delta<Person> patch)
         {
             if (ModelState.IsValid == false)
                 return BadRequest(ModelState);
 
-            if (patch.GetChangedPropertyNames().Contains("Id"))
+            if (patch.GetChangedPropertyNames().Contains("Id", StringComparer.OrdinalIgnoreCase))
                 return BadRequest();
 
             var person = await _repository.GetByIdAsync<Person>(key);
@@ -175,6 +181,7 @@ namespace AirVinyl.WebApi.Controllers
 
         #region DELETE
 
+        [HttpDelete]
         public async Task<IActionResult> Delete(int key)
         {
             var person = await _repository.GetByIdAsync<Person>(key);
@@ -186,7 +193,7 @@ namespace AirVinyl.WebApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("odata/People({key})/VinylRecords({relatedKey})")]
+        [HttpDelete("({key})/VinylRecords({relatedKey})")]
         public async Task<IActionResult> DeleteLinkToVinylRecord(int key, int relatedKey)
         {
             var person = await _repository.GetByIdAsync<Person>(key);

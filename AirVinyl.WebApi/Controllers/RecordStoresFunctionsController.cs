@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace AirVinyl.WebApi.Controllers
 {
+    [Route("odata")]
     public class RecordStoresFunctionsController : ODataController
     {
         private readonly IRepository _repository;
@@ -19,7 +20,7 @@ namespace AirVinyl.WebApi.Controllers
             _repository = repository;
         }
 
-        [HttpGet("odata/RecordStores({key})/AirVinyl.Functions.IsHighRated(minimumRating={minimumRating})")]
+        [HttpGet("RecordStores({key})/AirVinyl.Functions.IsHighRated(minimumRating={minimumRating})")]
         public bool IsHighRated(int key, int minimumRating)
         {
             return _repository.AsQueryable<RecordStore>()
@@ -27,7 +28,7 @@ namespace AirVinyl.WebApi.Controllers
                 .Any();
         }
 
-        [HttpGet("odata/RecordStores/AirVinyl.Functions.AreRatedBy(personIds={personIds})")]
+        [HttpGet("RecordStores/AirVinyl.Functions.AreRatedBy(personIds={personIds})")]
         public IActionResult AreReatedBy([FromODataUri] IEnumerable<int> personIds)
         {
             return Ok(_repository.AsQueryable<RecordStore>().Where(r => r.Ratings.Any(r => personIds.Contains(r.RatedBy.Id))));
